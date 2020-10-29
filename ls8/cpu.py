@@ -7,7 +7,14 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        self.ram = [0] * 256
+        self.reg = [0] * 8
+        self.pc = 0
+        self.running = False
+        self.sp = 7 # stack pointer starts at the tope of a 0-7 index
+        self.fl = 0b00000000 # all FLAGS set to FALSE on initialization
+        self.reg[self.sp] = 0xf4 # initialize stack pointer to RAM address f4
+
 
     def load(self):
         """Load a program into memory."""
@@ -30,6 +37,11 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
+    def ram_read(self, MAR):
+        return self.ram[MAR]
+
+    def ram_write(self, MDR, MAR):
+        self.ram[MAR] = MDR
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
