@@ -37,6 +37,21 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
+    def HLT(self):
+        self.running = False
+        self.pc += 1
+
+    def LDI(self):
+        reg_num = self.ram_read(self.pc + 1)
+        value = self.ram_read(self.pc + 2)
+        self.reg[reg_num] = value
+        self.pc += 3
+    
+    def PRN(self):
+        reg_num = self.ram_read(self.pc+1)
+        print(self.reg[reg_num])
+        self.pc += 2
+
     def ram_read(self, MAR):
         return self.ram[MAR]
 
