@@ -74,4 +74,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        self.running = True
+        while self.running:
+            ir = self.ram[self.pc]
+            self.call_stack(ir)
