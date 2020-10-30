@@ -42,6 +42,10 @@ class CPU:
         print(self.reg[reg_num])
         self.pc += 2
 
+    def MULT(self):
+        self.alu('MULT', self.pc+1, self.pc+2)
+        self.pc += 3
+
     def ram_read(self, MAR):
         return self.ram[MAR]
 
