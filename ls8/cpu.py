@@ -46,6 +46,19 @@ class CPU:
         self.alu('MULT', self.pc+1, self.pc+2)
         self.pc += 3
 
+    def PUSH(self, value= None):
+        self.sp -= 1
+        if not value:
+            value = self.reg[self.ram_read(self.pc + 1)]
+        self.ram_write(value, self.reg[self.sp])
+        self.pc += 2
+
+    def POP(self):
+        value = self.ram[self.sp]
+        self.reg[self.ram[self.pc + 1]] = value
+        self.sp += 1
+        self.pc += 2
+
     def ram_read(self, MAR):
         return self.ram[MAR]
 
@@ -65,12 +78,21 @@ class CPU:
                 self.ram[address] = int(command, 2)
                 address += 1
 
+    def CALL(self):
+        self.reg[self.sp] -= 1
+        self.ram_write(self.reg[self.sp], self.pc + 1)
+        self.pc += 2
+        self.trace()
+
+    def RET(self):
+        self.pc = self.ram_read(self.reg[self.sp])
+        self.reg[self.sp] += 1
+
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
-        if op == "ADD":
-            self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        if op == "MULT":
+            self.reg[self.ram[reg_a]] *= self.reg[self.ram[reg_b]]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -82,8 +104,6 @@ class CPU:
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
-            #self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
             self.ram_read(self.pc + 2)
